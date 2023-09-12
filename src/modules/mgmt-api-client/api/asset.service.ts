@@ -15,8 +15,8 @@ import { Injectable } from '@angular/core';
 import { HttpResponse, HttpEvent, HttpContext } from '@angular/common/http';
 import { Observable, from }                                        from 'rxjs';
 
-import { EdcConnectorClient, EdcConnectorClientContext } from '@think-it-labs/edc-connector-client';
-import { AssetInput, AssetResponse, IdResponse, QuerySpec } from "../model"
+import { EdcConnectorClient } from '@think-it-labs/edc-connector-client';
+import { AssetInput, Asset, IdResponse, QuerySpec } from "../model"
 
 @Injectable({
   providedIn: 'root'
@@ -24,9 +24,8 @@ import { AssetInput, AssetResponse, IdResponse, QuerySpec } from "../model"
 export class AssetService {
 
     private assets = this.edcConnectorClient.management.assets;
-    protected basePath = 'http://localhost';
 
-    constructor(private edcConnectorClient: EdcConnectorClient, private edcConnectorClientContext: EdcConnectorClientContext) {
+    constructor(private edcConnectorClient: EdcConnectorClient) {
     }
 
     /**
@@ -39,7 +38,7 @@ export class AssetService {
     public createAsset(assetEntryDto: AssetInput, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<IdResponse>>;
     public createAsset(assetEntryDto: AssetInput, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<IdResponse>>;
     public createAsset(assetEntryDto: AssetInput): Observable<any> {
-        return from(this.assets.create(this.edcConnectorClientContext, assetEntryDto))
+        return from(this.assets.create(assetEntryDto))
     }
 
     /**
@@ -48,15 +47,15 @@ export class AssetService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public getAsset(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<AssetResponse>;
-    public getAsset(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<AssetResponse>>;
-    public getAsset(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<AssetResponse>>;
+    public getAsset(id: string, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Asset>;
+    public getAsset(id: string, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Asset>>;
+    public getAsset(id: string, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Asset>>;
     public getAsset(id: string): Observable<any> {
         if (id === null || id === undefined) {
             throw new Error('Required parameter id was null or undefined when calling getAsset.');
         }
 
-        return from(this.assets.get(this.edcConnectorClientContext, id))
+        return from(this.assets.get(id))
 
     }
 
@@ -74,7 +73,7 @@ export class AssetService {
             throw new Error('Required parameter id was null or undefined when calling removeAsset.');
         }
 
-        return from(this.assets.delete(this.edcConnectorClientContext, id))
+        return from(this.assets.delete(id))
     }
 
     /**
@@ -83,11 +82,11 @@ export class AssetService {
      * @param observe set whether or not to return the data Observable as the body, response or events. defaults to returning the body.
      * @param reportProgress flag to report request and response progress.
      */
-    public requestAssets(querySpecDto?: QuerySpec, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<AssetResponse>>;
-    public requestAssets(querySpecDto?: QuerySpec, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<AssetResponse>>>;
-    public requestAssets(querySpecDto?: QuerySpec, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<AssetResponse>>>;
+    public requestAssets(querySpecDto?: QuerySpec, observe?: 'body', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<Array<Asset>>;
+    public requestAssets(querySpecDto?: QuerySpec, observe?: 'response', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpResponse<Array<Asset>>>;
+    public requestAssets(querySpecDto?: QuerySpec, observe?: 'events', reportProgress?: boolean, options?: {httpHeaderAccept?: 'application/json', context?: HttpContext}): Observable<HttpEvent<Array<Asset>>>;
     public requestAssets(querySpecDto?: QuerySpec): Observable<any> {
-        return from(this.assets.queryAll(this.edcConnectorClientContext, querySpecDto))
+        return from(this.assets.queryAll(querySpecDto))
     }
 
 }
